@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://cxpavivflhxjl"]
+
+[ext_resource type="Texture2D" uid="uid://w3t7kic2q56t" path="res://assets/dungeon-pack_free/dungeon-pack_free_player.png" id="1_jdeuv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f4fya"]
+atlas = ExtResource("1_jdeuv")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_73nc7"]
+atlas = ExtResource("1_jdeuv")
+region = Rect2(64, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n54mp"]
+atlas = ExtResource("1_jdeuv")
+region = Rect2(80, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8oxky"]
+atlas = ExtResource("1_jdeuv")
+region = Rect2(96, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_h4g4x"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f4fya")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_73nc7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n54mp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8oxky")
+}],
+"loop": 1,
+"name": &"idle_r",
+"speed": 6.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_h4g4x"]
+radius = 5.0
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=138578117]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=208575823]
+z_index = 1
+sprite_frames = SubResource("SpriteFrames_h4g4x")
+animation = &"idle_r"
+autoplay = "idle_r"
+frame_progress = 0.75444144
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1346406645]
+position = Vector2(0, 3)
+shape = SubResource("CircleShape2D_h4g4x")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1242612531]
+zoom = Vector2(4, 4)
+position_smoothing_enabled = true
