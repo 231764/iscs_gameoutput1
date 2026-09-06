@@ -13,23 +13,7 @@ var keep_playing_animation := false
 func _ready() -> void:
 	target_position = global_position
 	animated_sprite_2d.play("idle_r")
-
-func move_animation(direction: Vector2) -> void:
-	if direction == Vector2.UP:
-		animated_sprite_2d.play("walking_north")
-		facing_direction = Vector2.UP
-	elif direction == Vector2.DOWN:
-		animated_sprite_2d.play("walking_south")
-		facing_direction = Vector2.DOWN
-	elif direction == Vector2.LEFT:
-		animated_sprite_2d.flip_h = true
-		facing_direction = Vector2.LEFT
-		animated_sprite_2d.play("walking")
-	elif direction == Vector2.RIGHT:
-		facing_direction = Vector2.RIGHT
-		animated_sprite_2d.flip_h = false
-		animated_sprite_2d.play("walking")
-
+	
 func get_input_direction() -> Vector2:
 	if move_direction == Vector2.UP and Input.is_action_pressed("move_up"):
 		return Vector2.UP
@@ -49,38 +33,67 @@ func get_input_direction() -> Vector2:
 		return Vector2.RIGHT
 	return Vector2.ZERO
 
+func move_animation(direction: Vector2) -> void:
+	if direction == Vector2.UP:
+		animated_sprite_2d.play("walking_north")
+		facing_direction = Vector2.UP
+	elif direction == Vector2.DOWN:
+		animated_sprite_2d.play("walking_south")
+		facing_direction = Vector2.DOWN
+	elif direction == Vector2.LEFT:
+		animated_sprite_2d.flip_h = true
+		facing_direction = Vector2.LEFT
+		animated_sprite_2d.play("walking")
+	elif direction == Vector2.RIGHT:
+		facing_direction = Vector2.RIGHT
+		animated_sprite_2d.flip_h = false
+		animated_sprite_2d.play("walking")
+
+func idle_animation() -> void:
+	if facing_direction == Vector2.UP:
+		animated_sprite_2d.play("idle_north")
+	elif facing_direction == Vector2.DOWN:
+		animated_sprite_2d.play("idle_south")
+	elif facing_direction == Vector2.LEFT:
+		animated_sprite_2d.flip_h = true
+		animated_sprite_2d.play("idle_r")
+	elif facing_direction == Vector2.RIGHT:
+		animated_sprite_2d.flip_h = false
+		animated_sprite_2d.play("idle_r")
+
+
 func _physics_process(delta: float) -> void:
 	move_to_target(delta)
-	var direction = get_input_direction()
-	start_move(direction)
-	
-	#play idle animation
-	if is_moving == false:
-		facing_direction = get_input_direction()
-		print(facing_direction)
-		if facing_direction == Vector2.ZERO: return
-		elif facing_direction == Vector2.UP: animated_sprite_2d.play("idle_north")
-		elif facing_direction == Vector2.DOWN: animated_sprite_2d.play("idle_south")
-		elif facing_direction == Vector2.LEFT:
-			animated_sprite_2d.flip_h == true
-			animated_sprite_2d.play("idle_r")
-		elif facing_direction == Vector2.RIGHT: 
-			animated_sprite_2d.flip_h == false
-			animated_sprite_2d.play("idle_r")
+
+	if is_moving:
+		move_animation(move_direction)
+	else:
+		var direction := get_input_direction()
+
+		if direction != Vector2.ZERO:
+			start_move(direction)
+
+			if is_moving:
+				move_animation(direction)
+			else:
+				idle_animation()
+		else:
+			idle_animation()
 
 func start_move(direction: Vector2) -> void:
-	#if idle, play these
-	if is_moving:
-		return
 	if direction == Vector2.ZERO:
+		return
+
+	facing_direction = direction
+
+	if is_moving:
 		return
 	if test_move(global_transform, direction * TILE_SIZE):
 		return
+
 	move_direction = direction
 	target_position = global_position + direction * TILE_SIZE
 	is_moving = true
-	move_animation(direction)
-
 
 func move_to_target(delta: float) -> void:
 	var remaining := target_position - global_position
@@ -103,6 +116,13 @@ func apply_tile_effects() -> void:
 		force_move(forced_direction)
 	elif tile_type == "ice":
 		force_move(move_direction)
+	elif tile_type == "breakaway":
+		#func to count steps / animate it breaking
+		breakaway()
+		pass
+
+func breakaway() -> void:
+	print("Break!")
 
 func force_move(direction: Vector2) -> void:
 	if direction == Vector2.ZERO:
