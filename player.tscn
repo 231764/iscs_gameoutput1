@@ -211,9 +211,7 @@ radius = 5.0
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_h4g4x")
-animation = &"idle_south"
-frame = 2
-frame_progress = 0.914995
+animation = &"walking_south"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3)
