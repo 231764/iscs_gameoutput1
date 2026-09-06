@@ -23,7 +23,7 @@ func move_animation(direction: Vector2) -> void:
 		facing_direction = Vector2.DOWN
 	elif direction == Vector2.LEFT:
 		animated_sprite_2d.flip_h = true
-		facing_direction = Vector2.RIGHT
+		facing_direction = Vector2.LEFT
 		animated_sprite_2d.play("walking")
 	elif direction == Vector2.RIGHT:
 		facing_direction = Vector2.RIGHT
@@ -51,14 +51,25 @@ func get_input_direction() -> Vector2:
 
 func _physics_process(delta: float) -> void:
 	move_to_target(delta)
-	if is_moving == false:
-		if facing_direction == Vector2.UP: animated_sprite_2d.play("idle_north")
-		elif facing_direction == Vector2.DOWN: animated_sprite_2d.play("idle_south")
-		else: animated_sprite_2d.play("idle_r")
 	var direction = get_input_direction()
 	start_move(direction)
+	
+	#play idle animation
+	if is_moving == false:
+		facing_direction = get_input_direction()
+		print(facing_direction)
+		if facing_direction == Vector2.ZERO: return
+		elif facing_direction == Vector2.UP: animated_sprite_2d.play("idle_north")
+		elif facing_direction == Vector2.DOWN: animated_sprite_2d.play("idle_south")
+		elif facing_direction == Vector2.LEFT:
+			animated_sprite_2d.flip_h == true
+			animated_sprite_2d.play("idle_r")
+		elif facing_direction == Vector2.RIGHT: 
+			animated_sprite_2d.flip_h == false
+			animated_sprite_2d.play("idle_r")
 
 func start_move(direction: Vector2) -> void:
+	#if idle, play these
 	if is_moving:
 		return
 	if direction == Vector2.ZERO:
@@ -69,6 +80,7 @@ func start_move(direction: Vector2) -> void:
 	target_position = global_position + direction * TILE_SIZE
 	is_moving = true
 	move_animation(direction)
+
 
 func move_to_target(delta: float) -> void:
 	var remaining := target_position - global_position
