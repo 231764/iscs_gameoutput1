@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://cxpavivflhxjl"]
+[gd_scene format=3 uid="uid://cxpavivflhxjl"]
 
 [ext_resource type="Texture2D" uid="uid://w3t7kic2q56t" path="res://assets/dungeon-pack_free/dungeon-pack_free_player.png" id="1_jdeuv"]
 
@@ -113,7 +113,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_u1c27")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_north",
 "speed": 5.0
 }, {
@@ -130,7 +130,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_8oxky")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_r",
 "speed": 6.0
 }, {
@@ -147,7 +147,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_pbfsw")
 }],
-"loop": true,
+"loop": 1,
 "name": &"idle_south",
 "speed": 5.0
 }, {
@@ -164,7 +164,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hqtel")
 }],
-"loop": true,
+"loop": 1,
 "name": &"walking",
 "speed": 5.0
 }, {
@@ -181,7 +181,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ivps1")
 }],
-"loop": true,
+"loop": 1,
 "name": &"walking_north",
 "speed": 5.0
 }, {
@@ -198,7 +198,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_dw050")
 }],
-"loop": true,
+"loop": 1,
 "name": &"walking_south",
 "speed": 5.0
 }]
@@ -206,17 +206,17 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_h4g4x"]
 radius = 5.0
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=525434326]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=288886946]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_h4g4x")
 animation = &"walking_south"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1207589880]
 position = Vector2(0, 3)
 shape = SubResource("CircleShape2D_h4g4x")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1238509701]
 zoom = Vector2(4, 4)
 position_smoothing_enabled = true
