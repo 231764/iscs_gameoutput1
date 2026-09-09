@@ -7,6 +7,7 @@ var facing_direction := Vector2.ZERO
 var target_position := Vector2.ZERO
 var keep_playing_animation := false
 var active_breakable_cell := Vector2i(-1, -1)
+var tiles_to_move := 0
 
 @onready var animated_sprite_2d = $AnimatedSprite2D
 @onready var tilemap: TileMap = get_node("../TileMap")
@@ -15,24 +16,15 @@ func _ready() -> void:
 	target_position = global_position
 	animated_sprite_2d.play("idle_r")
 	
-func get_input_direction() -> Vector2:
-	if move_direction == Vector2.UP and Input.is_action_pressed("move_up"):
-		return Vector2.UP
-	if move_direction == Vector2.DOWN and Input.is_action_pressed("move_down"):
-		return Vector2.DOWN
-	if move_direction == Vector2.LEFT and Input.is_action_pressed("move_left"):
-		return Vector2.LEFT
-	if move_direction == Vector2.RIGHT and Input.is_action_pressed("move_right"):
-		return Vector2.RIGHT
-	if Input.is_action_pressed("move_up"):
-		return Vector2.UP
-	if Input.is_action_pressed("move_down"):
-		return Vector2.DOWN
-	if Input.is_action_pressed("move_left"):
-		return Vector2.LEFT
-	if Input.is_action_pressed("move_right"):
-		return Vector2.RIGHT
-	return Vector2.ZERO
+func get_random_direction() -> Vector2:
+	var directions = [
+		Vector2.UP,
+		Vector2.DOWN,
+		Vector2.LEFT,
+		Vector2.RIGHT
+	]
+	
+	return directions.pick_random()
 
 func move_animation(direction: Vector2) -> void:
 	if direction == Vector2.UP:
@@ -62,21 +54,24 @@ func idle_animation() -> void:
 		animated_sprite_2d.flip_h = false
 		animated_sprite_2d.play("idle_r")
 
+func choose_random_movement():
+	move_direction = get_random_direction()
+	tiles_to_move = randi_range(2, 6)
+	print("Tiles to move: " +  str(tiles_to_move))
+	start_move(move_direction)
+	move_animation(move_direction)
 
-func _physics_process(delta: float) -> void:
-	move_to_target(delta)
-
-	#Handling animations
-	if is_moving: #if already moving, keep moving
-		move_animation(move_direction)
-	else: #Start
-		var direction := get_input_direction()
-		if direction != Vector2.ZERO: 
-			start_move(direction)
+func _physics_process(delta):
+	if is_moving:
+		move_to_target(delta)
+	else: 
+		if randf() < 0.01: #
+			choose_random_movement()
 			if is_moving == false: #if interfere with wall, idle
 				idle_animation()
 		else: #if zero, idle
 			idle_animation()
+		
 
 func start_move(direction: Vector2) -> void:
 	if direction == Vector2.ZERO:
@@ -95,12 +90,17 @@ func move_to_target(delta: float) -> void:
 	var step_distance := SPEED * delta
 	if remaining.length() <= step_distance:
 		global_position = target_position
+		tiles_to_move -= 1
 		if is_moving:
+			
 			var current_cell := tilemap.local_to_map(tilemap.to_local(global_position))
 			break_active_tile(current_cell)
 			is_moving = false
 			apply_tile_effects()
-		return
+			print(tiles_to_move)
+			if tiles_to_move > 0:
+				start_move(move_direction)
+			
 	move_and_collide(move_direction * step_distance)
 
 func apply_tile_effects() -> void:
